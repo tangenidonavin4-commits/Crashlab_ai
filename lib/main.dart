@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/simulation_screen.dart';
+import 'screens/disclaimer_screen.dart';
 
 void main() {
   runApp(CrashLabApp());
@@ -19,7 +19,7 @@ class CrashLabApp extends StatelessWidget {
           elevation: 0,
         ),
       ),
-      home: SimulationScreen(),
+      home: DisclaimerScreen(),
     );
   }
 }
