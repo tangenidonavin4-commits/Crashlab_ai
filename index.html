@@ -3,42 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CrashLab AI</title>
+    <title>CrashLab AI - Betting Strategy Simulator</title>
     <style>
-        /* RESET & BASE */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             background: #0a0a0a;
             color: #00ff88;
             font-family: 'Courier New', monospace;
             padding: 20px;
-            max-width: 500px;
+            max-width: 600px;
             margin: 0 auto;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
-        
-        /* HEADER */
+
+        /* DISCLAIMER SCREEN */
+        #disclaimerScreen {
+            background: #1a1a2e;
+            padding: 30px;
+            border-radius: 16px;
+            border: 2px solid #ff8800;
+            text-align: center;
+        }
+
+        #disclaimerScreen .warning-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        #disclaimerScreen h1 {
+            color: #ff8800;
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        #disclaimerScreen p {
+            color: #ccc;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+
+        #disclaimerScreen .highlight {
+            color: #ff4444;
+            font-weight: bold;
+        }
+
+        #disclaimerScreen .btn-disclaimer {
+            background: #ff8800;
+            color: #0a0a0a;
+            border: none;
+            border-radius: 10px;
+            padding: 16px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
+            transition: all 0.2s;
+        }
+
+        #disclaimerScreen .btn-disclaimer:active {
+            transform: scale(0.98);
+        }
+
+        /* GAME SCREEN */
+        #gameScreen {
+            display: none;
+        }
+
         .header {
             text-align: center;
             border-bottom: 2px solid #00ff88;
             padding-bottom: 15px;
             margin-bottom: 25px;
         }
+
         .header h1 {
             color: #00ff88;
             font-size: 28px;
             letter-spacing: 2px;
         }
+
         .header p {
             color: #888;
             font-size: 14px;
             margin-top: 5px;
         }
 
-        /* BANKROLL */
         .bankroll {
             background: #1a1a2e;
             padding: 20px;
@@ -47,19 +107,20 @@
             margin-bottom: 20px;
             border: 1px solid #00ff88;
         }
+
         .bankroll .label {
             color: #888;
             font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
+
         .bankroll .amount {
             font-size: 36px;
             font-weight: bold;
             color: #00ff88;
         }
 
-        /* MULTIPLIER */
         .multiplier-box {
             background: #1a1a2e;
             padding: 35px;
@@ -69,30 +130,39 @@
             border: 1px solid #333;
             transition: all 0.3s;
         }
+
         .multiplier-box .number {
             font-size: 56px;
             font-weight: bold;
             color: #ffffff;
             transition: color 0.3s;
         }
+
         .multiplier-box .status {
             font-size: 18px;
             margin-top: 10px;
             color: #888;
         }
 
-        /* COLORS */
-        .green { color: #00ff88; }
-        .red { color: #ff4444; }
-        .orange { color: #ff8800; }
+        .green {
+            color: #00ff88;
+        }
 
-        /* STATS */
+        .red {
+            color: #ff4444;
+        }
+
+        .orange {
+            color: #ff8800;
+        }
+
         .stats {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 10px;
             margin-bottom: 20px;
         }
+
         .stat-card {
             background: #1a1a2e;
             padding: 12px;
@@ -100,10 +170,12 @@
             text-align: center;
             border: 1px solid #222;
         }
+
         .stat-card .value {
             font-size: 22px;
             font-weight: bold;
         }
+
         .stat-card .label {
             font-size: 10px;
             color: #888;
@@ -111,7 +183,6 @@
             letter-spacing: 1px;
         }
 
-        /* BUTTONS */
         .btn {
             width: 100%;
             padding: 16px;
@@ -125,19 +196,26 @@
             margin-bottom: 10px;
             transition: all 0.2s;
         }
-        .btn:active { transform: scale(0.98); }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
         .btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
             transform: none;
         }
+
         .btn-reset {
             background: #333;
             color: #fff;
         }
-        .btn-reset:active { transform: scale(0.98); }
 
-        /* HISTORY */
+        .btn-reset:active {
+            transform: scale(0.98);
+        }
+
         .history {
             background: #1a1a2e;
             padding: 12px;
@@ -148,15 +226,24 @@
             border: 1px solid #222;
             margin-top: 10px;
         }
-        .history .win { color: #00ff88; }
-        .history .loss { color: #ff4444; }
+
+        .history .win {
+            color: #00ff88;
+        }
+
+        .history .loss {
+            color: #ff4444;
+        }
+
         .history-item {
             padding: 4px 0;
             border-bottom: 1px solid #222;
         }
-        .history-item:last-child { border-bottom: none; }
 
-        /* FOOTER */
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
         .footer {
             text-align: center;
             color: #444;
@@ -169,48 +256,81 @@
 </head>
 <body>
 
-    <div class="header">
-        <h1>🚀 CRASHLAB AI</h1>
-        <p>Betting Strategy Simulator</p>
+    <!-- DISCLAIMER SCREEN -->
+    <div id="disclaimerScreen">
+        <div class="warning-icon">⚠️</div>
+        <h1>IMPORTANT DISCLAIMER</h1>
+        <p>
+            <strong>CrashLab AI is for <span class="highlight">EDUCATIONAL AND ENTERTAINMENT PURPOSES ONLY.</span></strong>
+        </p>
+        <p>
+            • This app does <strong>NOT</strong> predict actual game outcomes.<br>
+            • This app does <strong>NOT</strong> guarantee winnings.<br>
+            • All results are <strong>RANDOM</strong> and for practice only.<br>
+            • Never gamble with money you cannot afford to lose.<br>
+            • <span class="highlight">18+ ONLY.</span> Gambling can be addictive.
+        </p>
+        <p style="color: #888; font-size: 12px; text-align: center;">
+            By clicking "I Understand", you agree to these terms.
+        </p>
+        <button class="btn-disclaimer" onclick="acceptDisclaimer()">
+            ✅ I UNDERSTAND - CONTINUE
+        </button>
     </div>
 
-    <div class="bankroll">
-        <div class="label">💰 BANKROLL</div>
-        <div class="amount" id="bankrollDisplay">N$5,000</div>
-    </div>
+    <!-- GAME SCREEN -->
+    <div id="gameScreen">
 
-    <div class="multiplier-box">
-        <div class="number" id="multiplierDisplay">1.00x</div>
-        <div class="status" id="statusDisplay">🔄 Ready</div>
-    </div>
-
-    <div class="stats">
-        <div class="stat-card">
-            <div class="value green" id="winsDisplay">0</div>
-            <div class="label">✅ Wins</div>
+        <div class="header">
+            <h1>🚀 CRASHLAB AI</h1>
+            <p>Betting Strategy Simulator</p>
         </div>
-        <div class="stat-card">
-            <div class="value red" id="lossesDisplay">0</div>
-            <div class="label">❌ Losses</div>
+
+        <div class="bankroll">
+            <div class="label">💰 BANKROLL</div>
+            <div class="amount" id="bankrollDisplay">N$5,000</div>
         </div>
-        <div class="stat-card">
-            <div class="value orange" id="winRateDisplay">0%</div>
-            <div class="label">📊 Win Rate</div>
+
+        <div class="multiplier-box">
+            <div class="number" id="multiplierDisplay">1.00x</div>
+            <div class="status" id="statusDisplay">🔄 Ready</div>
         </div>
-    </div>
 
-    <button class="btn" id="startBtn">▶ START ROUND</button>
-    <button class="btn btn-reset" id="resetBtn">🔄 Reset Bankroll</button>
+        <div class="stats">
+            <div class="stat-card">
+                <div class="value green" id="winsDisplay">0</div>
+                <div class="label">✅ Wins</div>
+            </div>
+            <div class="stat-card">
+                <div class="value red" id="lossesDisplay">0</div>
+                <div class="label">❌ Losses</div>
+            </div>
+            <div class="stat-card">
+                <div class="value orange" id="winRateDisplay">0%</div>
+                <div class="label">📊 Win Rate</div>
+            </div>
+        </div>
 
-    <div class="history" id="historyDisplay">
-        <div style="color:#444; text-align:center;">No rounds yet</div>
-    </div>
+        <button class="btn" id="startBtn">▶ START ROUND</button>
+        <button class="btn btn-reset" id="resetBtn">🔄 Reset Bankroll</button>
 
-    <div class="footer">
-        ⚠️ Educational Use Only • Does NOT predict outcomes
+        <div class="history" id="historyDisplay">
+            <div style="color:#444; text-align:center;">No rounds yet</div>
+        </div>
+
+        <div class="footer">
+            ⚠️ Educational Use Only • 18+ • Does NOT predict outcomes
+        </div>
+
     </div>
 
     <script>
+        // DISCLAIMER
+        function acceptDisclaimer() {
+            document.getElementById('disclaimerScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+        }
+
         // GAME STATE
         let bankroll = 5000;
         let multiplier = 1.0;
@@ -234,7 +354,6 @@
         const startBtn = document.getElementById('startBtn');
         const resetBtn = document.getElementById('resetBtn');
 
-        // UPDATE UI
         function updateUI() {
             bankrollDisplay.textContent = 'N$' + bankroll.toFixed(2);
             multiplierDisplay.textContent = multiplier.toFixed(2) + 'x';
@@ -252,7 +371,6 @@
             }
         }
 
-        // UPDATE HISTORY
         function updateHistory() {
             if (history.length === 0) {
                 historyDisplay.innerHTML = '<div style="color:#444; text-align:center;">No rounds yet</div>';
@@ -268,7 +386,6 @@
             historyDisplay.scrollTop = historyDisplay.scrollHeight;
         }
 
-        // GENERATE CRASH POINT
         function generateCrashPoint() {
             const r = Math.random();
             if (r < 0.30) return 1.0 + Math.random() * 0.5;
@@ -278,7 +395,6 @@
             return 6.0 + Math.random() * 4.0;
         }
 
-        // START ROUND
         function startRound() {
             if (bankroll < 50) {
                 statusDisplay.textContent = '💀 BANKRUPT!';
@@ -314,7 +430,6 @@
             }, 80);
         }
 
-        // END ROUND
         function endRound() {
             const isWin = multiplier >= 2.0;
             let profit = 0;
@@ -358,7 +473,6 @@
             updateUI();
         }
 
-        // RESET
         function resetBankroll() {
             if (timer) {
                 clearInterval(timer);
@@ -380,11 +494,9 @@
             updateHistory();
         }
 
-        // EVENTS
         startBtn.addEventListener('click', startRound);
         resetBtn.addEventListener('click', resetBankroll);
 
-        // INIT
         updateUI();
     </script>
 
