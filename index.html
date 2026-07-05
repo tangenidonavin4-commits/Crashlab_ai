@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrashLab AI</title>
+    <style>
+        /* RESET & BASE */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0a0a;
+            color: #00ff88;
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        /* HEADER */
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #00ff88;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        .header h1 {
+            color: #00ff88;
+            font-size: 28px;
+            letter-spacing: 2px;
+        }
+        .header p {
+            color: #888;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        /* BANKROLL */
+        .bankroll {
+            background: #1a1a2e;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+            border: 1px solid #00ff88;
+        }
+        .bankroll .label {
+            color: #888;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .bankroll .amount {
+            font-size: 36px;
+            font-weight: bold;
+            color: #00ff88;
+        }
+
+        /* MULTIPLIER */
+        .multiplier-box {
+            background: #1a1a2e;
+            padding: 35px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+            border: 1px solid #333;
+            transition: all 0.3s;
+        }
+        .multiplier-box .number {
+            font-size: 56px;
+            font-weight: bold;
+            color: #ffffff;
+            transition: color 0.3s;
+        }
+        .multiplier-box .status {
+            font-size: 18px;
+            margin-top: 10px;
+            color: #888;
+        }
+
+        /* COLORS */
+        .green { color: #00ff88; }
+        .red { color: #ff4444; }
+        .orange { color: #ff8800; }
+
+        /* STATS */
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: #1a1a2e;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #222;
+        }
+        .stat-card .value {
+            font-size: 22px;
+            font-weight: bold;
+        }
+        .stat-card .label {
+            font-size: 10px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* BUTTONS */
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: #00ff88;
+            color: #0a0a0a;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 10px;
+            transition: all 0.2s;
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-reset {
+            background: #333;
+            color: #fff;
+        }
+        .btn-reset:active { transform: scale(0.98); }
+
+        /* HISTORY */
+        .history {
+            background: #1a1a2e;
+            padding: 12px;
+            border-radius: 8px;
+            max-height: 150px;
+            overflow-y: auto;
+            font-size: 12px;
+            border: 1px solid #222;
+            margin-top: 10px;
+        }
+        .history .win { color: #00ff88; }
+        .history .loss { color: #ff4444; }
+        .history-item {
+            padding: 4px 0;
+            border-bottom: 1px solid #222;
+        }
+        .history-item:last-child { border-bottom: none; }
+
+        /* FOOTER */
+        .footer {
+            text-align: center;
+            color: #444;
+            font-size: 10px;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #222;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>🚀 CRASHLAB AI</h1>
+        <p>Betting Strategy Simulator</p>
+    </div>
+
+    <div class="bankroll">
+        <div class="label">💰 BANKROLL</div>
+        <div class="amount" id="bankrollDisplay">N$5,000</div>
+    </div>
+
+    <div class="multiplier-box">
+        <div class="number" id="multiplierDisplay">1.00x</div>
+        <div class="status" id="statusDisplay">🔄 Ready</div>
+    </div>
+
+    <div class="stats">
+        <div class="stat-card">
+            <div class="value green" id="winsDisplay">0</div>
+            <div class="label">✅ Wins</div>
+        </div>
+        <div class="stat-card">
+            <div class="value red" id="lossesDisplay">0</div>
+            <div class="label">❌ Losses</div>
+        </div>
+        <div class="stat-card">
+            <div class="value orange" id="winRateDisplay">0%</div>
+            <div class="label">📊 Win Rate</div>
+        </div>
+    </div>
+
+    <button class="btn" id="startBtn">▶ START ROUND</button>
+    <button class="btn btn-reset" id="resetBtn">🔄 Reset Bankroll</button>
+
+    <div class="history" id="historyDisplay">
+        <div style="color:#444; text-align:center;">No rounds yet</div>
+    </div>
+
+    <div class="footer">
+        ⚠️ Educational Use Only • Does NOT predict outcomes
+    </div>
+
+    <script>
+        // GAME STATE
+        let bankroll = 5000;
+        let multiplier = 1.0;
+        let crashPoint = 1.0;
+        let isRunning = false;
+        let isCrashed = false;
+        let round = 0;
+        let wins = 0;
+        let losses = 0;
+        let timer = null;
+        let history = [];
+
+        // DOM REFS
+        const bankrollDisplay = document.getElementById('bankrollDisplay');
+        const multiplierDisplay = document.getElementById('multiplierDisplay');
+        const statusDisplay = document.getElementById('statusDisplay');
+        const winsDisplay = document.getElementById('winsDisplay');
+        const lossesDisplay = document.getElementById('lossesDisplay');
+        const winRateDisplay = document.getElementById('winRateDisplay');
+        const historyDisplay = document.getElementById('historyDisplay');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        // UPDATE UI
+        function updateUI() {
+            bankrollDisplay.textContent = 'N$' + bankroll.toFixed(2);
+            multiplierDisplay.textContent = multiplier.toFixed(2) + 'x';
+            winsDisplay.textContent = wins;
+            lossesDisplay.textContent = losses;
+            const total = wins + losses;
+            winRateDisplay.textContent = total > 0 ? Math.round((wins / total) * 100) + '%' : '0%';
+
+            if (isCrashed) {
+                multiplierDisplay.style.color = '#ff4444';
+            } else if (isRunning) {
+                multiplierDisplay.style.color = '#00ff88';
+            } else {
+                multiplierDisplay.style.color = '#ffffff';
+            }
+        }
+
+        // UPDATE HISTORY
+        function updateHistory() {
+            if (history.length === 0) {
+                historyDisplay.innerHTML = '<div style="color:#444; text-align:center;">No rounds yet</div>';
+                return;
+            }
+            let html = '';
+            const recent = history.slice(-10);
+            for (let h of recent) {
+                const cls = h.includes('WIN') ? 'win' : 'loss';
+                html += `<div class="history-item ${cls}">${h}</div>`;
+            }
+            historyDisplay.innerHTML = html;
+            historyDisplay.scrollTop = historyDisplay.scrollHeight;
+        }
+
+        // GENERATE CRASH POINT
+        function generateCrashPoint() {
+            const r = Math.random();
+            if (r < 0.30) return 1.0 + Math.random() * 0.5;
+            if (r < 0.60) return 1.5 + Math.random() * 0.5;
+            if (r < 0.80) return 2.0 + Math.random() * 1.0;
+            if (r < 0.95) return 3.0 + Math.random() * 3.0;
+            return 6.0 + Math.random() * 4.0;
+        }
+
+        // START ROUND
+        function startRound() {
+            if (bankroll < 50) {
+                statusDisplay.textContent = '💀 BANKRUPT!';
+                startBtn.disabled = true;
+                return;
+            }
+            if (isRunning) return;
+
+            round++;
+            multiplier = 1.0;
+            isRunning = true;
+            isCrashed = false;
+            crashPoint = generateCrashPoint();
+            statusDisplay.textContent = '🚀 FLYING...';
+            startBtn.disabled = true;
+
+            let count = 0;
+            timer = setInterval(() => {
+                count++;
+                if (!isCrashed) {
+                    multiplier = 1.0 + count * 0.05 + Math.random() * 0.02;
+                    multiplierDisplay.textContent = multiplier.toFixed(2) + 'x';
+
+                    if (multiplier >= crashPoint) {
+                        multiplier = crashPoint;
+                        isCrashed = true;
+                        isRunning = false;
+                        clearInterval(timer);
+                        timer = null;
+                        endRound();
+                    }
+                }
+            }, 80);
+        }
+
+        // END ROUND
+        function endRound() {
+            const isWin = multiplier >= 2.0;
+            let profit = 0;
+            let resultText = '';
+
+            if (isWin) {
+                profit = 50;
+                bankroll += 50;
+                wins++;
+                resultText = '✅ WIN! +N$50';
+            } else {
+                profit = -50;
+                bankroll -= 50;
+                losses++;
+                resultText = '❌ LOSS! -N$50';
+            }
+
+            statusDisplay.textContent = isWin ? '✅ WIN!' : '❌ LOSS!';
+            statusDisplay.style.color = isWin ? '#00ff88' : '#ff4444';
+            multiplierDisplay.style.color = isWin ? '#00ff88' : '#ff4444';
+
+            const historyText = `#${round}: ${multiplier.toFixed(2)}x → ${isWin ? '✅ WIN' : '❌ LOSS'}`;
+            history.push(historyText);
+            updateHistory();
+
+            if (bankroll < 50) {
+                statusDisplay.textContent = '💀 BANKRUPT! Game Over!';
+                startBtn.disabled = true;
+            } else {
+                setTimeout(() => {
+                    if (!isRunning && bankroll >= 50) {
+                        startBtn.disabled = false;
+                        statusDisplay.textContent = '🔄 Ready';
+                        statusDisplay.style.color = '#ffffff';
+                        multiplierDisplay.style.color = '#ffffff';
+                        updateUI();
+                    }
+                }, 1500);
+            }
+
+            updateUI();
+        }
+
+        // RESET
+        function resetBankroll() {
+            if (timer) {
+                clearInterval(timer);
+                timer = null;
+            }
+            isRunning = false;
+            isCrashed = false;
+            bankroll = 5000;
+            round = 0;
+            wins = 0;
+            losses = 0;
+            history = [];
+            multiplier = 1.0;
+            statusDisplay.textContent = '🔄 Reset';
+            statusDisplay.style.color = '#ffffff';
+            multiplierDisplay.style.color = '#ffffff';
+            startBtn.disabled = false;
+            updateUI();
+            updateHistory();
+        }
+
+        // EVENTS
+        startBtn.addEventListener('click', startRound);
+        resetBtn.addEventListener('click', resetBankroll);
+
+        // INIT
+        updateUI();
+    </script>
+
+</body>
+</html>
